@@ -36,6 +36,23 @@ verified and is not.
 2026-08-23 and was wrong: the game ships on Google AdMob alone with no mediation. If the
 advertising ever changes, this page changes first.
 
+## The check that runs here
+
+    scripts/lint-legal.sh
+
+Cratergut is its own game and owes nothing to anybody else's. Naming the thing it will
+inevitably be compared to — in prose, in a comment, in a file name, in an alt attribute — is
+how a clean-room product stops being one, and a public web page is the worst place for it,
+because a web page is what a search engine reads and what a lawyer is shown.
+
+The game's repository has run this check over its own files for a long time, and it used to
+scan the website too, back when the website lived inside it. Moving the site out would have
+quietly dropped that coverage from the one place it matters most, so the check came with it.
+`scripts/banned-terms.txt` is a copy of the game's list; the game's version has one exemption,
+for a generic English noun in a hidden App Store metadata field, and this one has none.
+
+Run it before pushing anything with words in it.
+
 ## Setting it up
 
 1. **Settings → Pages** in this repository: source `Deploy from a branch`, branch `main`,
