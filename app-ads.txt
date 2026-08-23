@@ -1,0 +1,30 @@
+# app-ads.txt for cratergut.com
+#
+# Advertising networks crawl this file to confirm that whoever is selling advertising in
+# Cratergut is actually allowed to. Without it the better-paying demand simply will not
+# bid, and since 2025 an unverified file means limited serving rather than merely lower
+# prices, so this is a launch blocker rather than an optimisation.
+#
+# THIS FILE IS COMPLETE AND READY TO DEPLOY. It was not, once: it held three placeholder
+# lines for a mediated launch that is not happening. Cratergut version one ships on Google
+# AdMob alone (docs/ADS-SETUP.md, "The decision"), so Google's line is the only one there
+# should be, and it is real — copied from AdMob's own "How to set up app-ads.txt" dialog on
+# 2026-08-19 rather than assembled by hand.
+#
+# Serve it from the root of the domain set as the App Store Connect Marketing URL, as
+# text/plain, HTTP 200, with no redirect to anywhere else. The crawl walks from the store
+# listing to the domain, so it cannot succeed until both exist. Allow about 24 hours.
+#
+# Add a network's lines only when that network is actually enabled, and paste what its
+# dashboard gives you rather than typing it: a wrong line is worse than a missing one,
+# because it looks verified and is not, and a line for a network you do not serve is a
+# supply-chain claim that is untrue. Unity's real entry is a multi-line block, and
+# ironSource's is in practice a long reseller block rather than the single line the old
+# placeholder here implied.
+
+# The IAB variable naming the business that owns this inventory. It has to be the domain
+# set as the App Store Connect Marketing URL, because that link is the path every crawler
+# walks to get here.
+OWNERDOMAIN=cratergut.com
+
+google.com, pub-5706069574815967, DIRECT, f08c47fec0942fa0
