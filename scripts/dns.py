@@ -3,9 +3,13 @@
 
 Namecheap has no "add one record" call. `namecheap.domains.dns.setHosts` **replaces every
 host record on the domain**, so the naive version of this script — send the nine records
-GitHub Pages needs — silently deletes the MX records and the domain stops receiving email.
-`support@cratergut.com` is printed on the website and filed with Apple as the support
-address, so that is not a small mistake.
+GitHub Pages needs — silently deletes everything else, including the five MX records and the
+SPF line that currently carry Namecheap's email forwarding for this domain.
+
+Nothing is known to depend on that forwarding today; the site's contact address is
+info@crindustries.xyz, on another domain entirely. It is preserved anyway. Deleting records
+nobody asked to delete is not this script's business, and "probably unused" is a poor reason
+to destroy something that is invisible until the day somebody needs it.
 
 So this reads what is there, merges, shows you the difference, and changes nothing unless
 you ask twice.
