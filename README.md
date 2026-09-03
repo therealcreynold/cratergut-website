@@ -78,8 +78,9 @@ Run it before pushing anything with words in it.
    the checkbox can take up to 24 hours to become available. Apple will not accept a plain
    HTTP privacy policy URL.
 
-`.nojekyll` is committed deliberately. Without it GitHub runs Jekyll over the repository,
-which processes and skips files by rules nobody here has asked for.
+`_config.yml` turns Jekyll on and tells it to publish nothing but the site. `.nojekyll` used
+to be committed here instead, deliberately, so GitHub served the files as they are — see
+"What this repository publishes" below for what that cost and why it was changed.
 
 ## Checking it actually works
 
@@ -108,24 +109,32 @@ no `app-ads.txt` in it and quietly loses AdMob verification. `Scripts/check-app-
 the game's repository derives its crawl target from that same field, and
 `docs/COMPLIANCE.md` §148 is the other place this is written down.
 
-## What this repository publishes, which is all of it
+## What this repository publishes
 
-GitHub Pages serves every file in the repository root, `README.md` and `scripts/` included.
-There is no ignore list, and `.nojekyll` does not add one — dotfiles are served too
-(`https://cratergut.com/.nojekyll` returns 200; only `.git` is special-cased by GitHub).
+**Only what `_config.yml` allows, and that is a recent change.** GitHub Pages deploys every
+file in a repository by default, so this site used to publish `README.md` and `scripts/` along
+with the four pages. `.nojekyll` did not help and could not: with Jekyll off there is no ignore
+list at all, so there is no way to keep a file in the repository and out of the public
+directory. Dotfiles were not a way round it either — `https://cratergut.com/.nojekyll` returned
+200, and only `.git` is special-cased by GitHub.
 
 That bit once, and badly. `scripts/banned-terms.txt` was served as prose at
 `https://cratergut.com/scripts/banned-terms.txt`, publishing the reference game's marks under
 a heading naming them as such, on the domain the App Store listing points at — the exact thing
-the paragraph above about search engines and lawyers exists to prevent. The list is stored
-base64-encoded as `scripts/banned-terms.b64` now and `scripts/lint-legal.sh` decodes it in
-memory. That removes the readable page; it is not concealment and is not meant to be.
+the paragraph above about search engines and lawyers exists to prevent.
 
-**The proper fix is still owed.** Delete `.nojekyll`, add a `_config.yml` with
+Both halves of the repair are now in:
 
-    exclude: [scripts, README.md]
+- The list is base64 as `scripts/banned-terms.b64`, and `scripts/lint-legal.sh` decodes it into
+  a variable rather than to disk, where the next run of the check would find the plaintext and
+  correctly fail. That removes the readable page. It is not concealment and is not offered as
+  any — anyone can decode it in one command, and git history still holds the plaintext.
+- `.nojekyll` is gone and `_config.yml` excludes `scripts` and `README.md` from the build, so
+  they are no longer published at all. Done 2026-09-03, once 1.1 had cleared review: it changes
+  how a live site is served, and doing it while App Review was reading the privacy-policy URL
+  risked a 404 there, which is a guideline 2.1 rejection.
 
-and let Jekyll leave them out of the build. It was not done on 2026-09-03 because it changes
-how a live site is served while App Review is reading its privacy-policy URL, and a 404 there
-is a guideline 2.1 rejection. Do it once 1.1 has cleared, and re-check all five URLs above
-afterwards. Anything added to this repository from now on is public the moment it is pushed.
+**Anything added to this repository is public the moment it is pushed unless it is named in
+`_config.yml`. Add it there first.** And after any change to that file, re-check all five URLs
+in the section above: an excluded page and a broken page look identical from a terminal, and
+three of those URLs are compiled into the shipping app.

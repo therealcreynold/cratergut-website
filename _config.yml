@@ -1,0 +1,31 @@
+# What GitHub Pages is allowed to publish.
+#
+# This file exists to stop the site publishing things that are not the site. GitHub Pages
+# deploys every file in the repository, so until 2026-09-03 `scripts/banned-terms.txt` was
+# served as prose at https://cratergut.com/scripts/banned-terms.txt -- the list of another
+# game's franchise, character and arsenal names, under a heading naming them as exactly
+# that, on the domain the App Store listing points at. The check written to keep those words
+# off this site was the one thing on it publishing them.
+#
+# `.nojekyll` used to be committed here, deliberately, so that GitHub served the files as
+# they are rather than running Jekyll over them. That is a reasonable default for a site with
+# no build step, and it had one cost nobody had priced: with Jekyll off there is no ignore
+# list, so there is no way to keep a file in the repository and out of the public directory.
+# Dotfiles are not a way round it either -- https://cratergut.com/.nojekyll returned 200, and
+# only `.git` is special-cased by GitHub.
+#
+# So Jekyll is on and told to publish nothing but the site. It is safe for these particular
+# files: Jekyll renders only files carrying YAML front matter, and every page here begins
+# with `<!doctype html>`, so all five are copied byte for byte. That was checked before this
+# was committed, along with there being no `{{` or `{%` anywhere.
+#
+# Anything added to this repository is public the moment it is pushed unless it is named
+# here. Add it here first.
+exclude:
+  - scripts
+  - README.md
+
+# Nothing else. There is no theme, no plugin and no layout: every page is hand-written HTML
+# and is meant to stay that way, because two of them are documents Apple and Google hold the
+# owner to and a templating layer between the words and the reader is a way to be surprised
+# by your own privacy policy.
