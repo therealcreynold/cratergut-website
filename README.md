@@ -83,7 +83,7 @@ which processes and skips files by rules nobody here has asked for.
 
 ## Checking it actually works
 
-Once DNS has propagated, all four of these must return 200 and the last must be `text/plain`:
+Once DNS has propagated, all five of these must return 200 and the last must be `text/plain`:
 
     curl -sSI https://cratergut.com/
     curl -sSI https://cratergut.com/privacy
@@ -91,5 +91,41 @@ Once DNS has propagated, all four of these must return 200 and the last must be 
     curl -sSI https://cratergut.com/support
     curl -sS  https://cratergut.com/app-ads.txt
 
-The three page URLs are the ones the game links to from Settings, and the same three go into
-App Store Connect as the Privacy Policy, Support and Marketing URLs.
+All three page URLs are linked from the game's Settings screen and are compiled into the
+binary, so all three must serve. Only **two** of them are App Store Connect fields, and the
+third field is not a page at all:
+
+| App Store Connect field | Value |
+|---|---|
+| Privacy Policy URL | `https://cratergut.com/privacy` |
+| Support URL | `https://cratergut.com/support` |
+| Marketing URL | `https://cratergut.com` — the apex, **not** `/terms` |
+
+`/terms` goes into no App Store Connect field. Getting this wrong is not a wording nit:
+Google reaches `app-ads.txt` by following the **Marketing URL** off the store listing, so
+setting Marketing to `https://cratergut.com/terms` points the crawler at a directory that has
+no `app-ads.txt` in it and quietly loses AdMob verification. `Scripts/check-app-ads.sh` in
+the game's repository derives its crawl target from that same field, and
+`docs/COMPLIANCE.md` §148 is the other place this is written down.
+
+## What this repository publishes, which is all of it
+
+GitHub Pages serves every file in the repository root, `README.md` and `scripts/` included.
+There is no ignore list, and `.nojekyll` does not add one — dotfiles are served too
+(`https://cratergut.com/.nojekyll` returns 200; only `.git` is special-cased by GitHub).
+
+That bit once, and badly. `scripts/banned-terms.txt` was served as prose at
+`https://cratergut.com/scripts/banned-terms.txt`, publishing the reference game's marks under
+a heading naming them as such, on the domain the App Store listing points at — the exact thing
+the paragraph above about search engines and lawyers exists to prevent. The list is stored
+base64-encoded as `scripts/banned-terms.b64` now and `scripts/lint-legal.sh` decodes it in
+memory. That removes the readable page; it is not concealment and is not meant to be.
+
+**The proper fix is still owed.** Delete `.nojekyll`, add a `_config.yml` with
+
+    exclude: [scripts, README.md]
+
+and let Jekyll leave them out of the build. It was not done on 2026-09-03 because it changes
+how a live site is served while App Review is reading its privacy-policy URL, and a 404 there
+is a guideline 2.1 rejection. Do it once 1.1 has cleared, and re-check all five URLs above
+afterwards. Anything added to this repository from now on is public the moment it is pushed.
